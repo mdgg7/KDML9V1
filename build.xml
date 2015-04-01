@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+
+<project basedir="." default="build" name="WebStarterApp">
+    <property environment="env"/>
+	<property name="srcDir" value="."/>
+	<property name="debuglevel" value="source,lines,vars"/>
+	<property name="target" value="1.7"/>
+    <property name="source" value="1.7"/>
+
+    <property name="ARCHIVE_DIR" value="."/>
+	<property name="warname" value= "webStarterApp.war"/>
+    <path id="classpathDir">
+        <pathelement location="WebContent/WEB-INF/lib/ant.jar"/>
+        <pathelement location="WebContent/WEB-INF/lib/commons-fileupload-1.2.2.jar"/>
+        <pathelement location="WebContent/WEB-INF/lib/commons-io-2.4.jar"/>
+        <pathelement location="WebContent/WEB-INF/lib/edu.mit.jwi_1.1_jdk.jar"/>
+        <pathelement location="WebContent/WEB-INF/lib/jakarta-ant-optional.jar"/>
+        <pathelement location="WebContent/WEB-INF/lib/jwnl-1.3.3.jar"/>
+        <pathelement location="WebContent/WEB-INF/lib/maxent-2.4.0.jar"/>
+        <pathelement location="WebContent/WEB-INF/lib/opennlp-tools-1.3.0.jar"/>
+        <pathelement location="WebContent/WEB-INF/lib/servlet-api.jar"/>
+        <pathelement location="WebContent/WEB-INF/lib/trove.jar"/>
+    	<pathelement location="WebContent/WEB-INF/com.ibm.ws.javaee.jaxrs.1.1_1.0.1.jar"/> 
+    	<pathelement location="dep-jar/com.ibm.ws.javaee.jaxrs.1.1_1.0.1.jar"/>
+        
+    	        
+    </path>
+	
+	<!---    <path id="EAR Libraries.libraryclasspath"/>
+    <path id="Server Library [Cloud Foundry (Runtime) v1.0] (unbound).libraryclasspath"/>
+    <path id="KDML9.classpath">
+        <pathelement location="bin"/>
+        <path refid="Web App Libraries.libraryclasspath"/>
+        <path refid="EAR Libraries.libraryclasspath"/>
+        <path refid="Server Library [Cloud Foundry (Runtime) v1.0] (unbound).libraryclasspath"/>
+        <pathelement location="dep-jar/com.ibm.ws.javaee.jaxrs.1.1_1.0.1.jar"/>
+        <pathelement location="../../OneDrive/Documents/ant.jar"/>
+        <pathelement location="../../OneDrive/Documents/jakarta-ant-optional.jar"/>
+        <pathelement location="../../OneDrive/Documents/jwnl-1.3.3.jar"/>
+        <pathelement location="../../OneDrive/Documents/maxent-2.4.0.jar"/>
+        <pathelement location="../../OneDrive/Documents/opennlp-tools-1.3.0.jar"/>
+        <pathelement location="../../OneDrive/Documents/trove.jar"/>
+        <pathelement location="../../OneDrive/Documents/edu.mit.jwi_1.1_jdk.jar"/>
+        <pathelement location="WebContent/WEB-INF/lib/commons-fileupload-1.2.2.jar"/>
+        <pathelement location="dep-jar/servlet-api.jar"/>
+    </path>
+	
+	-->
+    <target name="init">
+        <mkdir dir="bin"/>
+    </target>
+    <target name="clean">
+        <delete dir="bin"/>
+		<delete file="${ARCHIVE_DIR}/${warname}" />		
+    </target>
+    <target name="build" depends="build-project,build-war"/>
+    <target name="cleanall" depends="clean"/>
+    <target name="build-project" depends="clean,init">
+    	<copy todir="${ARCHIVE_DIR}">
+	      <fileset file="manifest.yml" />
+	    </copy>
+        <echo message="${ant.project.name}: ${ant.file}"/>
+        <javac debug="true" debuglevel="${debuglevel}" destdir="bin" source="${source}" target="${target}"
+		includeantruntime="false">
+            <src path="src"/>
+            <classpath refid="classpathDir"/>
+        </javac>
+    </target>
+ 
+   <target name="build-war" depends="build-project">
+	  <war destfile="${ARCHIVE_DIR}/${warname}" webxml="WebContent/WEB-INF/web.xml">
+	  	<webinf dir="WebContent/WEB-INF">
+	  		<include name="resources"/>
+	    </webinf>
+	  	<fileset dir="WebContent">
+	  		<include name="**/*"/>
+	  	</fileset>
+	  	<include name="dev_tweets.txt"/>
+	  	<include name="mgr_tweets.txt"/>
+	  	<fileset dir="WebContent">
+	  		<include name="**/*"/>
+	    </fileset>
+	  	<lib dir="WebContent/WEB-INF/lib"/>
+	  	<lib dir="dep-jar"/>
+	  	<lib dir="WebContent"/>
+	  	<classes dir="bin"/>
+	  </war>
+   </target>
+</project>
